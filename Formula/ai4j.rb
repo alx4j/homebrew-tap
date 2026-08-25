@@ -4,8 +4,8 @@ class Ai4j < Formula
   url "https://github.com/alx4j/ai4j/releases/download/v1.0.0/ai4j"
   sha256 "6fce6df2590431aea44c990138e25ca1df87fed9781d494284b63a311ad22f4b"
 
-  depends_on :macos
   depends_on arch: :arm64
+  depends_on :macos
 
   def install
     bin.install "ai4j"
