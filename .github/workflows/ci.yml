@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  formula:
+    name: Audit and install on macOS ARM64
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - name: Check out the tap
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Verify the runner
+        run: test "$RUNNER_OS/$RUNNER_ARCH" = "macOS/ARM64"
+
+      - name: Register the checked-out tap
+        run: brew tap alx4j/tap "$GITHUB_WORKSPACE"
+
+      - name: Audit the formula
+        run: brew audit --strict --online alx4j/tap/ai4j
+
+      - name: Install and test the release
+        run: |
+          brew install alx4j/tap/ai4j
+          brew test alx4j/tap/ai4j
+          ai4j version --json | grep -F '"cliVersion":"v1.0.0"'
